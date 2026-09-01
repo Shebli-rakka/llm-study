@@ -14,7 +14,6 @@ This is a personal study project built while following the book. The code is org
 - `src/llm_from_scratch/tokenization/` contains the simple tokenizer implementations from the early chapters.
 - `src/llm_from_scratch/dataStructure/` and `src/llm_from_scratch/loaders/` contain the GPT dataset and data loader helpers.
 - `src/llm_from_scratch/GPT/` contains the GPT model, transformer block, layer norm, GELU, and feed-forward modules.
-- `tests/` contains tests for my implementations.
 - `checkpoints/` contains locally saved model weights.
 - `outputs/` contains generated text, metrics, and other experiment outputs.
 
