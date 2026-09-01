@@ -1,2 +1,0 @@
-"""Generation-related package."""
-

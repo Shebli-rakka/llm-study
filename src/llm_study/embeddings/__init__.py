@@ -1,2 +1,0 @@
-"""Embeddings-related package."""
-
