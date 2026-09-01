@@ -1,8 +1,8 @@
 import re
 
-from llm_from_scratch.tokenization.simpleTokenizer import (
+from llm_study.tokenization.simple_tokenizer import (
     SimpleTokenizerV2,
-    simpleTokenizerV1,
+    SimpleTokenizerV1,
 )
 
 
@@ -29,7 +29,7 @@ for i, item in enumerate(vocab.items()):
 
 
 # Using the vocab to encode text.
-tokenizer = simpleTokenizerV1(vocab)
+tokenizer = SimpleTokenizerV1(vocab)
 text = """"It's the last he painted, you know,"
  Mrs. Gisburn said with pardonable pride."""
 ids = tokenizer.encode(text)

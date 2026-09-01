@@ -1,7 +1,7 @@
 import torch
 import tiktoken
 
-from llm_from_scratch.GPT.DummyGPT import GPTModel
+from llm_study.model.gpt import GPTModel
 
 GPT_CONFIG_124M = {
     "vocab_size": 50257,      # Vocabulary size
@@ -14,7 +14,7 @@ GPT_CONFIG_124M = {
 }
 
 
-def generate_text_simple(model, idx, max_new_tokens, context_size):
+def generate_text_greedy(model, idx, max_new_tokens, context_size):
     for _ in range(max_new_tokens):
         idx_cond = idx[:, -context_size:]
         with torch.no_grad():
@@ -28,10 +28,6 @@ def generate_text_simple(model, idx, max_new_tokens, context_size):
     return idx
 
 
-# Keep the misspelled name for compatibility with older notes.
-generate_text_simpe = generate_text_simple
-
-
 model = GPTModel(GPT_CONFIG_124M)
 tokenizer = tiktoken.get_encoding("gpt2")
 start_context = "Hello, I am"
@@ -41,7 +37,7 @@ encoded_tensor = torch.tensor(encoded).unsqueeze(0)
 print("encoded_tensor shape:\n", encoded_tensor.shape)
 
 model.eval()
-out = generate_text_simple(
+out = generate_text_greedy(
     model=model,
     idx=encoded_tensor,
     max_new_tokens=6,

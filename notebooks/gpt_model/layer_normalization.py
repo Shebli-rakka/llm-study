@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 
-from llm_from_scratch.GPT.DummyGPT import LayerNorm
+from llm_study.model.gpt import LayerNorm
 
 
 batch_example = torch.rand(2, 5)

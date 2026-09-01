@@ -1,10 +1,10 @@
 import tiktoken
 from torch.utils.data import DataLoader
 
-from llm_from_scratch.dataStructure.gptDatasets import GPTDatasetV1
+from llm_study.data.gpt_dataset import GPTDataset
 
 
-class DATALoaderV1:
+class GPTDataLoader:
     def create_data_loader(
         self,
         txt,
@@ -16,7 +16,7 @@ class DATALoaderV1:
         num_workers=0,
     ):
         tokenizer = tiktoken.get_encoding("gpt2")
-        dataset = GPTDatasetV1(txt, tokenizer, max_length, stride)
+        dataset = GPTDataset(txt, tokenizer, max_length, stride)
         return DataLoader(
             dataset,
             batch_size=batch_size,

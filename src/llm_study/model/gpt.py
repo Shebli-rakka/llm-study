@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 
-from llm_from_scratch.attention.multiHeadAttention import MultiHeadAttention
+from llm_study.attention.multi_head_attention import MultiHeadAttention
 
 
 class GPTModel(nn.Module):

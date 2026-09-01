@@ -1,8 +1,8 @@
 import torch
 import tiktoken
 
-from llm_from_scratch.GPT.DummyGPT import GPTModel
-from llm_from_scratch.loaders.dataLoader import DATALoaderV1
+from llm_study.data.data_loader import GPTDataLoader
+from llm_study.model.gpt import GPTModel
 
 GPT_CONFIG_124M = {
     "vocab_size": 50257,      # Vocabulary size
@@ -19,7 +19,7 @@ model = GPTModel(GPT_CONFIG_124M)
 model.eval()
 
 
-def generate_text_simple(model, idx, max_new_tokens, context_size):
+def generate_text_greedy(model, idx, max_new_tokens, context_size):
     for _ in range(max_new_tokens):
         idx_cond = idx[:, -context_size:]
         with torch.no_grad():
@@ -31,9 +31,6 @@ def generate_text_simple(model, idx, max_new_tokens, context_size):
         idx = torch.cat((idx, idx_next), dim=1)
 
     return idx
-
-
-generate_text_simpe = generate_text_simple
 
 
 def text_to_token_ids(text, tokenizer):
@@ -49,7 +46,7 @@ def token_ids_to_text(token_ids, tokenizer):
 start_context = "Every effort moves you"
 tokenizer = tiktoken.get_encoding("gpt2")
 
-token_ids = generate_text_simple(
+token_ids = generate_text_greedy(
     model=model,
     idx=text_to_token_ids(start_context, tokenizer),
     max_new_tokens=10,
@@ -144,7 +141,7 @@ val_data = text_data[split_idx:]
 
 torch.manual_seed(123)
 
-train_loader = DATALoaderV1().create_data_loader(train_data,
+train_loader = GPTDataLoader().create_data_loader(train_data,
                                                  batch_size=2,
                                                  max_length=GPT_CONFIG_124M["context_length"],
                                                  stride=GPT_CONFIG_124M["context_length"],
@@ -152,7 +149,7 @@ train_loader = DATALoaderV1().create_data_loader(train_data,
                                                  drop_last=True,
                                                  num_workers=0)
 
-val_loader = DATALoaderV1().create_data_loader(val_data, batch_size = 2,
+val_loader = GPTDataLoader().create_data_loader(val_data, batch_size = 2,
                                                max_length=GPT_CONFIG_124M["context_length"],
                                                stride=GPT_CONFIG_124M["context_length"],
                                                shuffle=True,
@@ -168,7 +165,7 @@ for x, y in val_loader:
     print(x.shape, y.shape)
 
 
-def calc_loss_batch(input_batch, target_batch, model, device):
+def calculate_batch_loss(input_batch, target_batch, model, device):
     input_batch = input_batch.to(device)
     target_batch = target_batch.to(device)
     logits = model(input_batch)
@@ -178,7 +175,7 @@ def calc_loss_batch(input_batch, target_batch, model, device):
     )
 
 
-def calc_loss_loader(data_loader, model, device, num_batches=None):
+def calculate_loader_loss(data_loader, model, device, num_batches=None):
     total_loss = 0
     if len(data_loader) == 0:
         return float("nan")
@@ -189,7 +186,7 @@ def calc_loss_loader(data_loader, model, device, num_batches=None):
 
     for i, (input_batch, target_batch) in enumerate(data_loader):
         if i < num_batches:
-            loss = calc_loss_batch(input_batch, target_batch, model, device)
+            loss = calculate_batch_loss(input_batch, target_batch, model, device)
             total_loss += loss
         else:
             break
@@ -199,7 +196,7 @@ def calc_loss_loader(data_loader, model, device, num_batches=None):
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model.to(device)
 with torch.no_grad():
-    train_loss = calc_loss_loader(train_loader, model, device)
-    val_loss = calc_loss_loader(val_loader, model, device)
+    train_loss = calculate_loader_loss(train_loader, model, device)
+    val_loss = calculate_loader_loss(val_loader, model, device)
 print("Training loss:", train_loss)
 print("Validation loss:", val_loss)

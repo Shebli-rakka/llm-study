@@ -1,6 +1,6 @@
 import tiktoken
 
-from llm_from_scratch.loaders.dataLoader import DATALoaderV1
+from llm_study.data.data_loader import GPTDataLoader
 
 
 with open(r"data/raw/the-verdict.txt", "r", encoding="utf-8") as f:
@@ -32,8 +32,8 @@ for i in range(context_size):
 print("-------------------")
 
 
-# Use of dataLoader
-dataloader = DATALoaderV1().create_data_loader(
+# Use of the data loader.
+dataloader = GPTDataLoader().create_data_loader(
     txt=raw_text,
     batch_size=2,
     max_length=4,

@@ -11,7 +11,7 @@ def _tokens_to_text(ids, int_to_str):
     return re.sub(r'\s+([,.?!"()\'])', r'\1', text)
 
 
-class simpleTokenizerV1:
+class SimpleTokenizerV1:
     def __init__(self, vocab):
         self.str_to_int = vocab
         self.int_to_str = {i: s for s, i in vocab.items()}

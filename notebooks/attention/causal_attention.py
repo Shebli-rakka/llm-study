@@ -1,6 +1,6 @@
 import torch
 
-from llm_from_scratch.attention.selfAttention import selfAttention_v2
+from llm_study.attention.self_attention import SelfAttentionV2
 
 inputs = torch.tensor(
     [
@@ -17,7 +17,7 @@ d_in = inputs.shape[-1]
 d_out = 2
 
 # Calculating attention scores.
-sa_v2 = selfAttention_v2(d_in, d_out)
+sa_v2 = SelfAttentionV2(d_in, d_out)
 queries = sa_v2.W_query(inputs)
 keys = sa_v2.W_key(inputs)
 

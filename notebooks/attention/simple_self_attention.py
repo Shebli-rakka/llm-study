@@ -34,11 +34,11 @@ print(attn_weights_2.sum())
 
 
 # We often use the softmax function for normalization.
-def softmax_naive(x):
+def naive_softmax(x):
     return torch.exp(x) / torch.exp(x).sum(dim=0)
 
 
-attn_weights_2_naive = softmax_naive(attn_scores_2)
+attn_weights_2_naive = naive_softmax(attn_scores_2)
 print(attn_weights_2_naive)
 print(attn_weights_2_naive.sum())
 

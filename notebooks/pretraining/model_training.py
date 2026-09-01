@@ -1,8 +1,8 @@
 import torch
 import tiktoken
 
-from llm_from_scratch.GPT.DummyGPT import GPTModel
-from llm_from_scratch.loaders.dataLoader import DATALoaderV1
+from llm_study.data.data_loader import GPTDataLoader
+from llm_study.model.gpt import GPTModel
 
 GPT_CONFIG_124M = {
     "vocab_size": 50257,      # Vocabulary size
@@ -24,7 +24,7 @@ val_data = text_data[split_idx:]
 
 torch.manual_seed(123)
 
-train_loader = DATALoaderV1().create_data_loader(
+train_loader = GPTDataLoader().create_data_loader(
     train_data,
     batch_size=2,
     max_length=GPT_CONFIG_124M["context_length"],
@@ -34,7 +34,7 @@ train_loader = DATALoaderV1().create_data_loader(
     num_workers=0,
 )
 
-val_loader = DATALoaderV1().create_data_loader(
+val_loader = GPTDataLoader().create_data_loader(
     val_data,
     batch_size=2,
     max_length=GPT_CONFIG_124M["context_length"],
@@ -54,7 +54,7 @@ def token_ids_to_text(token_ids, tokenizer):
     return tokenizer.decode(flat.tolist())
 
 
-def generate_text_simple(model, idx, max_new_tokens, context_size):
+def generate_text_greedy(model, idx, max_new_tokens, context_size):
     for _ in range(max_new_tokens):
         idx_cond = idx[:, -context_size:]
         with torch.no_grad():
@@ -68,7 +68,7 @@ def generate_text_simple(model, idx, max_new_tokens, context_size):
     return idx
 
 
-def calc_loss_batch(input_batch, target_batch, model, device):
+def calculate_batch_loss(input_batch, target_batch, model, device):
     input_batch = input_batch.to(device)
     target_batch = target_batch.to(device)
     logits = model(input_batch)
@@ -78,7 +78,7 @@ def calc_loss_batch(input_batch, target_batch, model, device):
     )
 
 
-def calc_loss_loader(data_loader, model, device, num_batches=None):
+def calculate_loader_loss(data_loader, model, device, num_batches=None):
     total_loss = 0
     if len(data_loader) == 0:
         return float("nan")
@@ -89,14 +89,14 @@ def calc_loss_loader(data_loader, model, device, num_batches=None):
 
     for i, (input_batch, target_batch) in enumerate(data_loader):
         if i < num_batches:
-            loss = calc_loss_batch(input_batch, target_batch, model, device)
+            loss = calculate_batch_loss(input_batch, target_batch, model, device)
             total_loss += loss
         else:
             break
     return total_loss / num_batches
 
 
-def train_model_simple(
+def train_model(
     model,
     train_loader,
     val_loader,
@@ -115,7 +115,7 @@ def train_model_simple(
         model.train()
         for input_batch, target_batch in train_loader:
             optimizer.zero_grad()
-            loss = calc_loss_batch(input_batch, target_batch, model, device)
+            loss = calculate_batch_loss(input_batch, target_batch, model, device)
             loss.backward()
             optimizer.step()
             tokens_seen += input_batch.numel()
@@ -145,13 +145,13 @@ def train_model_simple(
 def evaluate_model(model, train_loader, val_loader, device, eval_iter):
     model.eval()
     with torch.no_grad():
-        train_loss = calc_loss_loader(
+        train_loss = calculate_loader_loss(
             train_loader,
             model,
             device,
             num_batches=eval_iter,
         )
-        val_loss = calc_loss_loader(
+        val_loss = calculate_loader_loss(
             val_loader,
             model,
             device,
@@ -166,7 +166,7 @@ def generate_and_print_sample(model, tokenizer, device, start_context):
     context_size = model.pos_emb.weight.shape[0]
     encoded = text_to_token_ids(start_context, tokenizer).to(device)
     with torch.no_grad():
-        token_ids = generate_text_simple(
+        token_ids = generate_text_greedy(
             model=model,
             idx=encoded,
             max_new_tokens=50,
@@ -190,7 +190,7 @@ optimizer = torch.optim.AdamW(
     weight_decay=0.1,
 )
 num_epochs = 10
-train_losses, val_losses, tokens_seen = train_model_simple(
+train_losses, val_losses, tokens_seen = train_model(
     model,
     train_loader,
     val_loader,

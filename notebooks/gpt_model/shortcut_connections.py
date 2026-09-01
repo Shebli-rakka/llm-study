@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 
-from llm_from_scratch.GPT.DummyGPT import GELU
+from llm_study.model.gpt import GELU
 
 
 class ExampleDeepNeuralNetwork(nn.Module):
@@ -44,7 +44,7 @@ model_without_shortcut = ExampleDeepNeuralNetwork(
 )
 
 
-def print_gradients(model, x):
+def print_weight_gradients(model, x):
     output = model(x)
     target = torch.tensor([[0.0]])
 
@@ -61,8 +61,8 @@ def print_gradients(model, x):
             )
 
 
-print_gradients(model_without_shortcut, sample_input)
+print_weight_gradients(model_without_shortcut, sample_input)
 
 torch.manual_seed(123)
 model_with_shortcut = ExampleDeepNeuralNetwork(layer_sizes, use_shortcut=True)
-print_gradients(model_with_shortcut, sample_input)
+print_weight_gradients(model_with_shortcut, sample_input)

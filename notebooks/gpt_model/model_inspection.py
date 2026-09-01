@@ -1,7 +1,7 @@
 import torch
 import tiktoken
 
-from llm_from_scratch.GPT.DummyGPT import GPTModel
+from llm_study.model.gpt import GPTModel
 
 GPT_CONFIG_124M = {
     "vocab_size": 50257,      # Vocabulary size

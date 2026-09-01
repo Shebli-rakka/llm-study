@@ -1,10 +1,10 @@
 import torch
 import torch.nn as nn
 
-from llm_from_scratch.attention.causalAttention import CausalAttention
+from llm_study.attention.causal_attention import CausalAttention
 
 
-class MultiHeadAttentionWraper(nn.Module):
+class MultiHeadAttentionWrapper(nn.Module):
     def __init__(
         self,
         d_in,

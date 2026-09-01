@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import torch
 import torch.nn as nn
 
-from llm_from_scratch.GPT.DummyGPT import GELU, FeedForward
+from llm_study.model.gpt import GELU, FeedForward
 
 
 GPT_CONFIG_124M = {
