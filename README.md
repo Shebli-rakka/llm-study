@@ -1,4 +1,4 @@
-# llm-from-scratch
+# llm-study
 
 This repository is my personal implementation workspace based on Sebastian Raschka's book *Build a Large Language Model (From Scratch)*.
 
