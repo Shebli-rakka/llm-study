@@ -1,35 +1,82 @@
-# llm-study
+# GPT-Style Language Model in PyTorch
 
-This repository is my personal implementation workspace based on Sebastian Raschka's book *Build a Large Language Model (From Scratch)*.
+An implementation of a decoder-only Transformer, from tokenization and causal attention to next-token training and autoregressive generation.
 
-The goal is to understand and implement the mechanisms myself rather than copy the official repository or use a high-level LLM framework.
+This is my independent study implementation based on Sebastian Raschka's *Build a Large Language Model (From Scratch)*. It focuses on understanding the model internals and is not the book's official repository.
 
-This is a personal study project built while following the book. The code is organized by topic and keeps the implementation close to the learning process.
+**Stack:** Python 3.11+ · PyTorch · tiktoken · NumPy · Matplotlib
+
+## Implemented components
+
+- Simple tokenizers and GPT-2 byte-pair encoding through `tiktoken`.
+- Sliding-window datasets for next-token prediction.
+- Self-attention, causal masking, and multi-head attention.
+- Token and positional embeddings, pre-normalized Transformer blocks, residual connections, GELU feed-forward layers, and a language-model head.
+- Training and validation loss calculation, an AdamW training loop, and text-generation examples.
 
 ## Repository layout
 
-- `notebooks/` contains topic-based experiments and runnable scripts.
-- `src/llm_study/` contains reusable code promoted from the experiments.
-- `src/llm_study/attention/` contains self-attention, causal attention, and multi-head attention implementations.
-- `src/llm_study/tokenization/` contains the simple tokenizer implementations.
-- `src/llm_study/data/` contains the GPT dataset and data loader helpers.
-- `src/llm_study/model/` contains the GPT model, transformer block, layer norm, GELU, and feed-forward modules.
-- `checkpoints/` contains locally saved model weights.
-- `outputs/` contains generated text, metrics, and other experiment outputs.
+| Path | Contents |
+| --- | --- |
+| `src/llm_study/attention/` | Reusable attention implementations |
+| `src/llm_study/tokenization/` | Simple tokenizer implementations |
+| `src/llm_study/data/` | GPT dataset and data-loader helpers |
+| `src/llm_study/model/` | GPT model and Transformer components |
+| `notebooks/` | Topic-based runnable Python experiments |
+| `data/` | Local dataset folders and data notes |
+| `checkpoints/`, `outputs/` | Local model weights and experiment outputs |
 
-## Environment setup
+## Setup
 
-Create and activate a Python 3.11 environment, then install the project in editable mode:
+From the repository root:
 
 ```bash
 python -m venv .venv
-.venv\Scripts\Activate.ps1
-python -m pip install --upgrade pip
-pip install -e .
 ```
 
-## Notes
+Activate the environment:
 
-- This project is an independent study implementation based on the book, not the official source repository.
-- The repository includes my own code and notes written while studying the material.
-- Local datasets, checkpoints, and generated outputs are ignored by Git by default.
+```bash
+# Linux / macOS
+source .venv/bin/activate
+```
+
+```powershell
+# Windows PowerShell
+.venv\Scripts\Activate.ps1
+```
+
+Install the package:
+
+```bash
+python -m pip install --upgrade pip
+python -m pip install -e .
+```
+
+## Explore the implementation
+
+Inspect the GPT architecture, output dimensions, and parameter counts without training:
+
+```bash
+python notebooks/gpt_model/model_inspection.py
+```
+
+This script instantiates a GPT-2-sized configuration with random weights; it is not a pretrained model. It may require substantial RAM.
+
+The `notebooks/text_data/`, `notebooks/attention/`, and `notebooks/gpt_model/` directories contain smaller examples for individual components.
+
+## Training
+
+The training script reads `data/raw/the-verdict.txt`; provide that file before running it. Review the model configuration and training settings first:
+
+```bash
+python notebooks/pretraining/model_training.py
+```
+
+The script performs a train/validation split, evaluates cross-entropy loss, and generates sample text during training. Training can be slow on a CPU.
+
+Local datasets, checkpoints, and generated outputs are ignored by Git. This repository presents the implementation and experiments; it does not claim pretrained-model quality or benchmark results.
+
+## Reference
+
+Sebastian Raschka, *Build a Large Language Model (From Scratch)*. The book supplies the learning sequence and architectural reference for this implementation.
